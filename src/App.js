@@ -1,18 +1,27 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import FoxComponent from './components/FoxComponent';
+import FormComponent from './components/FormComponent';
+import {
+  Switch,
+  Route,
+  withRouter
+} from "react-router-dom";
 
 class App extends React.Component {
-  constructor(){
+  constructor() {
     super();
     this.state = {
-      foxStatus: "standing"
+      foxStatus: "standing",
+      foxInfo: {
+          name: null
+      },
     };
   }
 
-  __keyDownHandler = (e)=>{
-    
-    if(e.keyCode === 32){
-      switch(this.state.foxStatus){
+  __keyDownHandler = (e) => {
+    if (e.keyCode === 32) {
+      switch (this.state.foxStatus) {
         case "standing": {
           this.__setFoxStatus("running");
           break;
@@ -21,23 +30,54 @@ class App extends React.Component {
           this.__setFoxStatus("jumping");
           break;
         }
+        default:
       }
+    } else if(e.keyCode === 27){
+      this.__endGame();
     }
   }
 
-  __setFoxStatus = (foxStatus)=>{
+  __setFoxStatus = (foxStatus) => {
     this.setState({
       foxStatus
     });
   }
-  
-  render(){
+
+  __setFoxName = (name) => {
+    this.setState({
+      foxInfo: {
+        ...this.state.foxInfo,
+        name
+      }
+    });
+    this.props.history.push("/start");
+  }
+
+  __endGame(){
+    this.setState({
+      foxStatus: "standing",
+      foxInfo: {
+          name: null
+      },
+    });
+    this.props.history.push("/");
+  }
+
+  render() {
     return (
+
       <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`} tabIndex="0" onKeyDown={this.__keyDownHandler}>
-        <FoxComponent setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus}/>
+        <Switch>
+          <Route path="/start">
+            <FoxComponent foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
+          </Route>
+          <Route path="/">
+            <FormComponent setFoxName={this.__setFoxName} />
+          </Route>
+        </Switch>
       </div>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
