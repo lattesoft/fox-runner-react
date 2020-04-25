@@ -89,7 +89,24 @@ body {
     width: 100%;
     overflow: hidden;
 }
+.fox-info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: -70px;
+    position: absolute;
+}
+.fox-info img{
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
 
-.btn-facebook{
-    width: 100%;
+.fox-info h4{
+    text-shadow:
+       3px 3px 0 #fff,
+     -1px -1px 0 #fff,  
+      1px -1px 0 #fff,
+      -1px 1px 0 #fff,
+       1px 1px 0 #fff;
 }

@@ -14,7 +14,10 @@ class App extends React.Component {
     this.state = {
       foxStatus: "standing",
       foxInfo: {
-          name: null
+          image: "/assets/images/icon.png",
+          name: "Fox Runner",
+          hp: 500,
+          fullHp: 500
       },
     };
   }

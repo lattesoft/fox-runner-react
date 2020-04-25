@@ -1,57 +1,94 @@
-import React from 'react';
-import { Tooltip } from 'reactstrap';
-import {withRouter} from 'react-router-dom';
+import React from "react";
+import { Progress } from "reactstrap";
+import { withRouter } from "react-router-dom";
 
 class FoxComponent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            foxStatus: null,
-            bottom: null,
-            isPopoverOpen: false
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      foxStatus: null,
+      bottom: null,
+      foxInfo: null,
+      hpColor: "success",
+      hpPercent: 100,
+    };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    let { foxStatus, foxInfo } = props;
+    let hpPercent = (foxInfo.hp * 100) / foxInfo.fullHp;
+    let hpColor = "success";
+
+    let bottom = 20;
+    if (props.foxStatus === "jumping") {
+      bottom = 150;
     }
 
-    static getDerivedStateFromProps(props, state) {
-        let bottom = 20;
-        if (props.foxStatus === "jumping") {
-            bottom = 150;
-        }
-        return {
-            bottom,
-            foxStatus: props.foxStatus
-        };
+    switch (true) {
+      case hpPercent < 25: {
+        hpColor = "danger";
+        break;
+      }
+      case hpPercent < 50: {
+        hpColor = "warning";
+        break;
+      }
+      case hpPercent < 75: {
+        hpColor = "info";
+        break;
+      }
+      default:
+        hpColor = "success";
     }
 
-    componentDidMount() {
-        if(!this.props.foxInfo.name){
-            this.props.history.push("/");
-        }
+    return {
+      bottom,
+      foxStatus: foxStatus,
+      foxInfo: foxInfo,
+      hpColor,
+      hpPercent,
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.foxStatus !== this.state.foxStatus;
+  }
+
+  componentDidUpdate() {
+    if (this.state.foxStatus === "jumping") {
+      console.log("jumping");
+      setTimeout(() => {
         this.setState({
-            isPopoverOpen: true,
+          bottom: 20,
         });
+        console.log("set running");
+        this.props.setFoxStatus("running");
+      }, 500);
     }
+  }
 
-    render() {
-        let { bottom, foxStatus } = this.state;
-        if (foxStatus === "jumping") {
-            console.log("jumping");
-            setTimeout(() => {
-                this.setState({
-                    bottom: 20
-                });
-                this.props.setFoxStatus("running");
-            }, 500);
-        }
-        return (
-            <div id="foxObject" style={{ bottom }} className={`fox-object ${foxStatus === "standing" ? "fox-standing" : "fox-running"}`}>
-                {
-                    this.props.foxInfo.name &&
-                    <Tooltip placement="top" isOpen={this.state.isPopoverOpen} target={"foxObject"} >{this.props.foxInfo.name}</Tooltip>
-                }
+  render() {
+    let { bottom, foxStatus, foxInfo, hpPercent, hpColor } = this.state;
+    return (
+      <div
+        id="foxObject"
+        style={{ bottom }}
+        className={`fox-object ${
+          foxStatus === "standing" ? "fox-standing" : "fox-running"
+        }`}
+      >
+        <div className="fox-info">
+            <img src={foxInfo.image} alt={foxInfo.name} />
+            <div>
+              <h4>{foxInfo.name}</h4>
+              <Progress color={hpColor} value={hpPercent}>
+                {foxInfo.hp}/{foxInfo.fullHp}
+              </Progress>
             </div>
-        )
-    }
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withRouter(FoxComponent);
