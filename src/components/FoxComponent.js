@@ -20,22 +20,25 @@ export default class FoxComponent extends React.Component {
         };
     }
 
-    shouldComponentUpdate(nextProps,nextState){
-        return nextProps.foxStatus !== this.props.foxStatus
-    
+    shouldComponentUpdate(nextProps, nextState){
+        return nextState.foxStatus !== this.state.foxStatus
     }
 
-    render(){
-        let {bottom,foxStatus} = this.state;
-        if(foxStatus === "jumping"){
+    componentDidUpdate(){
+        if(this.state.foxStatus === "jumping"){
             console.log("jumping");
             setTimeout(()=>{
                 this.setState({
                     bottom: 20
                 });
+                console.log("set running");
                 this.props.setFoxStatus("running");
             },500);
         }
+    }
+
+    render(){
+        let {bottom,foxStatus} = this.state;
         return <div style={{bottom}} className={`fox-object ${foxStatus === "standing" ? "fox-standing" : "fox-running"}`}></div>
     }
 }

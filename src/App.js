@@ -9,6 +9,10 @@ class App extends React.Component {
     };
   }
 
+  componentDidMount(){
+    document.body.addEventListener('keydown', this.__keyDownHandler);
+  }
+
   __keyDownHandler = (e)=>{
     
     if(e.keyCode === 32){
@@ -21,6 +25,7 @@ class App extends React.Component {
           this.__setFoxStatus("jumping");
           break;
         }
+        default:
       }
     }
   }
@@ -33,7 +38,7 @@ class App extends React.Component {
   
   render(){
     return (
-      <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`} tabIndex="0" onKeyDown={this.__keyDownHandler}>
+      <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`}>
         <FoxComponent setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus}/>
       </div>
     );
