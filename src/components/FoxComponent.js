@@ -77,7 +77,7 @@ class FoxComponent extends React.Component {
         }`}
       >
         <div className="fox-info">
-            <img src="/assets/images/icon.png" alt={foxInfo.name} />
+            <img src={foxInfo.image} alt={foxInfo.name} />
             <div>
               <h4>{foxInfo.name}</h4>
               <Progress color={hpColor} value={hpPercent}>
