@@ -1,6 +1,6 @@
 import React from "react";
 import { Progress } from "reactstrap";
-import {withUser} from '../utils/user';
+import { withUser } from '../utils/user';
 
 class FoxComponent extends React.Component {
   constructor(props) {
@@ -61,7 +61,7 @@ class FoxComponent extends React.Component {
         this.setState({
           bottom: 20,
         });
-        console.log("set running");
+        console.log("running");
         this.props.setFoxStatus("running");
       }, 500);
     }
@@ -71,20 +71,21 @@ class FoxComponent extends React.Component {
     let { bottom, foxStatus, foxInfo, hpPercent, hpColor } = this.state;
     return (
       <div
+        ref={this.props.foxRef}
         id="foxObject"
         style={{ bottom }}
         className={`fox-object ${
           foxStatus === "standing" ? "fox-standing" : "fox-running"
-        }`}
+          }`}
       >
         <div className="fox-info">
-            <img src={foxInfo.image} alt={foxInfo.name} />
-            <div>
-              <h4>{foxInfo.name} <small><a href="#" onClick={this.props.logout}>x</a></small></h4>
-              <Progress color={hpColor} value={hpPercent}>
-                {foxInfo.hp}/{foxInfo.fullHp}
-              </Progress>
-            </div>
+          <img src={foxInfo.image} alt={foxInfo.name} />
+          <div>
+            <h4>{foxInfo.name} <small><a href="#" onClick={this.props.logout}>x</a></small></h4>
+            <Progress color={hpColor} value={hpPercent}>
+              {foxInfo.hp}/{foxInfo.fullHp}
+            </Progress>
+          </div>
         </div>
       </div>
     );
