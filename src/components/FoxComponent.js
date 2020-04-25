@@ -1,6 +1,6 @@
 import React from "react";
 import { Progress } from "reactstrap";
-import { withRouter } from "react-router-dom";
+import {withUser} from '../utils/user';
 
 class FoxComponent extends React.Component {
   constructor(props) {
@@ -80,7 +80,7 @@ class FoxComponent extends React.Component {
         <div className="fox-info">
             <img src={foxInfo.image} alt={foxInfo.name} />
             <div>
-              <h4>{foxInfo.name}</h4>
+              <h4>{foxInfo.name} <small><a href="#" onClick={this.props.logout}>x</a></small></h4>
               <Progress color={hpColor} value={hpPercent}>
                 {foxInfo.hp}/{foxInfo.fullHp}
               </Progress>
@@ -91,4 +91,4 @@ class FoxComponent extends React.Component {
   }
 }
 
-export default withRouter(FoxComponent);
+export default withUser(FoxComponent);
