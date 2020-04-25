@@ -18,7 +18,7 @@ export const withUser = Component => {
                 }} logout={(e)=>{
                     e.preventDefault();
                     localStorage.removeItem("facebookProfile");
-                    props.endGame();
+                    props.exitGame();
                     props.history.push("/form");
                     return false;
                 }}/>
@@ -28,7 +28,7 @@ export const withUser = Component => {
                 {...props}
                 logout={(e)=>{
                     e.preventDefault();
-                    props.endGame();
+                    props.exitGame();
                     localStorage.removeItem("facebookProfile");
                     props.history.push("/form");
                     return false;

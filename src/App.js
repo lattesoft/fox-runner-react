@@ -8,18 +8,20 @@ import {
   withRouter
 } from "react-router-dom";
 
+const foxInfoInit = {
+  image: "/assets/images/icon.png",
+  name: null,
+  hp: 500,
+  fullHp: 500
+}
+
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       foxStatus: "standing",
       isLogin: false,
-      foxInfo: {
-          image: "/assets/images/icon.png",
-          name: null,
-          hp: 500,
-          fullHp: 500
-      },
+      foxInfo: foxInfoInit,
     };
   }
 
@@ -61,11 +63,16 @@ class App extends React.Component {
     this.setState({
       foxStatus: "standing",
       foxInfo: {
-          image: "/assets/images/icon.png",
-          name: null,
+        ...this.state.foxInfo,
           hp: 500,
-          fullHp: 500
       },
+    });
+  }
+
+  __exitGame = ()=>{
+    this.__endGame();
+    this.setState({
+      foxInfo: foxInfoInit
     });
   }
 
@@ -75,7 +82,7 @@ class App extends React.Component {
       <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`} tabIndex="0" onKeyDown={this.__keyDownHandler}>
         <Switch>
           <Route path="/start">
-            <FoxComponent endGame={this.__endGame} setFoxInfo={this.__setFoxInfo} foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
+            <FoxComponent exitGame={this.__exitGame} setFoxInfo={this.__setFoxInfo} foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
           </Route>
           <Route path="/">
             <FormComponent setFoxInfo={this.__setFoxInfo} />
