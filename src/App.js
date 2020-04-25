@@ -14,9 +14,15 @@ class App extends React.Component {
     this.state = {
       foxStatus: "standing",
       foxInfo: {
-          name: null
+          name: "Fox Runner",
+          hp: 500,
+          fullHp: 500
       },
     };
+  }
+
+  componentDidMount(){
+    document.body.addEventListener('keydown', this.__keyDownHandler);
   }
 
   __keyDownHandler = (e) => {
@@ -66,7 +72,7 @@ class App extends React.Component {
   render() {
     return (
 
-      <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`} tabIndex="0" onKeyDown={this.__keyDownHandler}>
+      <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`}>
         <Switch>
           <Route path="/start">
             <FoxComponent foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
