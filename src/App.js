@@ -13,8 +13,8 @@ import items from './constants/items';
 const foxInfoInit = {
   image: "/assets/images/icon.png",
   name: null,
-  hp: 500,
-  fullHp: 500
+  hp: 50,
+  fullHp: 50
 }
 
 class App extends React.Component {
@@ -29,6 +29,13 @@ class App extends React.Component {
       items: []
     };
     this.foxRef = createRef();
+    this.backgroundMusic = new Audio("/assets/sounds/01_background_music.mp3");
+    this.passSound = new Audio("/assets/sounds/02_coins.wav");
+    this.endSound = new Audio("/assets/sounds/04_bass.wav");
+    this.backgroundMusic.addEventListener('ended', function () {
+      this.currentTime = 0;
+      this.play();
+    }, false);
   }
 
   __getFoxStatus = () => {
@@ -69,33 +76,20 @@ class App extends React.Component {
   }
 
   __startGame = ()=>{
+    this.backgroundMusic.play();
     this.setState({
-      items:[]
+      items:[],
+      foxInfo: {
+        ...this.state.foxInfo,
+        hp: foxInfoInit.hp
+      }
     });
     this.__setFoxStatus("running");
-    setTimeout(() => {
-      let key =  Date.now();
-      this.setState({
-        items: [
-          {
-            key,
-            component: <ItemComponent
-            key={key}
-            componentKey={key}
-            foxCurrent={this.state.foxCurrent}
-            item={items[0]}
-            endGame={this.__endGame}
-            foxStatus={this.__getFoxStatus}
-            removeItem={this.__removeItem}
-            getFoxCurrent={this.__getFoxCurrent}
-          />
-          }
-        ]
-      });
-    }, 1000);
+    this.__randomItem();
   }
 
   __endGame = () => {
+    this.backgroundMusic.pause();
     this.setState({
       isEndGame: true,
       foxStatus: "standing"
@@ -131,13 +125,69 @@ class App extends React.Component {
     return this.foxRef.current;
   }
 
+  __randomNumber(from,to){
+    return Math.floor(Math.random() * to) + from 
+  }
+
+  __randomItem(){
+    setTimeout(()=>{
+      if(this.__getFoxStatus() !== "standing"){
+        let key = Date.now();
+        this.setState({
+          items: this.state.items.concat([
+            {
+              key,
+              component: <ItemComponent
+              key={key}
+              componentKey={key}
+              foxCurrent={this.state.foxCurrent}
+              item={items[this.__randomNumber(0,21)]}
+              endGame={this.__endGame}
+              foxStatus={this.__getFoxStatus}
+              removeItem={this.__removeItem}
+              getFoxCurrent={this.__getFoxCurrent}
+              keepItem={this.__keepItem}
+            />
+            }
+          ])
+        });
+        this.__randomItem();
+      }
+     
+    },this.__randomNumber(700,2000));
+  }
+
+  __keepItem = (item)=>{
+    console.log(item);
+    let hp = this.state.foxInfo.hp+item.hp;
+    if(hp <= 0){
+      hp = 0;
+      this.__endGame();
+      this.endSound.play();
+    }
+    if(hp > foxInfoInit.fullHp){
+      hp = foxInfoInit.fullHp;
+    }
+    this.passSound.play();
+    this.setState({
+      foxInfo: {
+        ...this.state.foxInfo,
+        hp
+      }
+    });
+  }
+
+  __getFoxInfo = ()=>{
+    return this.state.foxInfo;
+  }
+
   render() {
     return (
       <div className={`background ${this.state.foxStatus === "standing" ? "" : "background-running"}`} tabIndex="0" onKeyDown={this.__keyDownHandler}>
         <Switch>
           <Route path="/start">
             {this.state.items.map(item=>item.component)}
-            <FoxComponent isEndGame={this.state.isEndGame} foxRef={this.foxRef} exitGame={this.__exitGame} setFoxInfo={this.__setFoxInfo} foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
+            <FoxComponent getFoxInfo={this.__getFoxInfo} isEndGame={this.state.isEndGame} foxRef={this.foxRef} exitGame={this.__exitGame} setFoxInfo={this.__setFoxInfo} foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
           </Route>
           <Route path="/">
             <FormComponent setFoxInfo={this.__setFoxInfo} />

@@ -50,10 +50,6 @@ class FoxComponent extends React.Component {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextState.foxStatus !== this.state.foxStatus;
-  }
-
   componentDidUpdate() {
     if (this.state.foxStatus === "jumping") {
       console.log("jumping");
@@ -68,7 +64,27 @@ class FoxComponent extends React.Component {
   }
 
   render() {
-    let { bottom, foxStatus, foxInfo, hpPercent, hpColor } = this.state;
+    let { bottom, foxStatus,foxInfo } = this.state;
+    let foxInfoProps = this.props.getFoxInfo();
+    let hpPercent = (foxInfoProps.hp * 100) / foxInfoProps.fullHp;
+    let hpColor = null;
+    switch (true) {
+      case hpPercent < 25: {
+        hpColor = "danger";
+        break;
+      }
+      case hpPercent < 50: {
+        hpColor = "warning";
+        break;
+      }
+      case hpPercent < 75: {
+        hpColor = "info";
+        break;
+      }
+      default:
+        hpColor = "success";
+    }
+
     return (
       <div
         ref={this.props.foxRef}
@@ -83,7 +99,7 @@ class FoxComponent extends React.Component {
           <div>
             <h4>{foxInfo.name} <small><a href="#" onClick={this.props.logout}>x</a></small></h4>
             <Progress color={hpColor} value={hpPercent}>
-              {foxInfo.hp}/{foxInfo.fullHp}
+              {foxInfoProps.hp}/{foxInfoProps.fullHp}
             </Progress>
           </div>
         </div>

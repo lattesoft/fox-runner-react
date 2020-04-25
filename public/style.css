@@ -89,6 +89,11 @@ body {
     width: 100%;
     overflow: hidden;
 }
+
+.item-hp{
+    text-align: center;
+}
+
 .fox-info{
     display: flex;
     justify-content: center;

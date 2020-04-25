@@ -22,8 +22,8 @@ export default function ItemComponent(props) {
                     if (itemDiffFox > 50 && itemDiffFox < 100) {
                         prevItem.isPass = true;
                         if (props.foxStatus() === "running") {
-                            clearInterval(interval)
-                            props.endGame();
+                            props.removeItem(props.componentKey);
+                            props.keepItem(props.item);
                         }
                     }
                 }
@@ -39,5 +39,10 @@ export default function ItemComponent(props) {
         };
     }, []);
     
-    return <img style={{ left: item.left }} className="barrier-object" src={props.item.url} alt="Item" />
+    return (
+        <div className="barrier-object" style={{ left: item.left }}>
+            <div className="item-hp">{props.item.hp > 0 ? "+"+props.item.hp : props.item.hp}</div>
+            <img width="50" src={props.item.url} alt="Item" />
+        </div>
+    )
 }
