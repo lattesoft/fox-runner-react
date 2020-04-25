@@ -29,18 +29,23 @@ export default class FormComponent extends Component {
                                 <CardBody>
                                     <Input onChange={this.__onChageHandler} value={this.state.name} style={{ marginBottom: 10 }} type="text" name="name" placeholder="Your Name" />
                                     <Row>
-                                        <Col sm={6}>
+                                        <Col md={6}>
                                             <Button onClick={() => {
-                                                this.props.setFoxName(this.state.name);
-                                            }} color="primary" style={{ width: "100%" }}>Let's start!</Button>
+                                                this.props.setFoxInfo({
+                                                    name: this.state.name
+                                                });
+                                            }} color="info" style={{ width: "100%" }}>Let's start!</Button>
                                         </Col>
-                                        <Col sm={6}>
+                                        <Col md={6}>
                                             <FacebookLogin
                                                 appId="2658551874377386"
                                                 callback={(res) => {
                                                     axios.get("https://graph.facebook.com/v6.0/me?fields=id%2Cfirst_name&access_token=" + res.accessToken).then((resProfile) => {
-                                                        console.log(resProfile.data);
-                                                        this.props.setFoxName(resProfile.data.first_name);
+                                                        let {first_name,id} = resProfile.data
+                                                        this.props.setFoxInfo({
+                                                            name: first_name,
+                                                            image: `http://graph.facebook.com/${id}/picture?type=large`
+                                                        });
                                                     });
 
                                                 }}

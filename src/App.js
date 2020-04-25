@@ -46,11 +46,21 @@ class App extends React.Component {
     });
   }
 
-  __setFoxName = (name) => {
+  // __setFoxName = (name) => {
+  //   this.setState({
+  //     foxInfo: {
+  //       ...this.state.foxInfo,
+  //       name
+  //     }
+  //   });
+  //   this.props.history.push("/start");
+  // }
+
+    __setFoxInfo= (data) => {
     this.setState({
       foxInfo: {
         ...this.state.foxInfo,
-        name
+        ...data
       }
     });
     this.props.history.push("/start");
@@ -75,7 +85,7 @@ class App extends React.Component {
             <FoxComponent foxInfo={this.state.foxInfo} setFoxStatus={this.__setFoxStatus} foxStatus={this.state.foxStatus} />
           </Route>
           <Route path="/">
-            <FormComponent setFoxName={this.__setFoxName} />
+            <FormComponent setFoxInfo={this.__setFoxInfo} />
           </Route>
         </Switch>
       </div>
